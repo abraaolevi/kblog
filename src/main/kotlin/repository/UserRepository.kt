@@ -5,6 +5,9 @@ import model.table.Users
 import org.jetbrains.exposed.sql.*
 import utility.Security
 
+typealias UserId = Int
+typealias UserEmail = String
+
 class UserRepository(val security: Security): AppRepository() {
 
     suspend fun getAllUsers(): List<User> {
@@ -13,15 +16,15 @@ class UserRepository(val security: Security): AppRepository() {
         }
     }
 
-    suspend fun getUserByEmail(email: String): User? {
+    suspend fun getUser(by: UserEmail): User? {
         return query {
-            Users.select { Users.email eq email }.mapNotNull { toUser(it) }.singleOrNull()
+            Users.select { Users.email eq by }.mapNotNull { toUser(it) }.singleOrNull()
         }
     }
 
-    suspend fun getUser(id: Int): User? {
+    suspend fun getUser(by: UserId): User? {
         return query {
-            Users.select { Users.id eq id }.mapNotNull { toUser(it) }.singleOrNull()
+            Users.select { Users.id eq by }.mapNotNull { toUser(it) }.singleOrNull()
         }
     }
 
@@ -52,9 +55,9 @@ class UserRepository(val security: Security): AppRepository() {
         return getUser(key!!)!!
     }
 
-    suspend fun deleteUser(id: Int): Boolean {
+    suspend fun deleteUser(by: UserId): Boolean {
         return query {
-            Users.deleteWhere { Users.id eq id } > 0
+            Users.deleteWhere { Users.id eq by } > 0
         }
     }
 

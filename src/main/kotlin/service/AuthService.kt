@@ -13,7 +13,7 @@ class AuthService(
 ) : AppService() {
 
     suspend fun authenticate(data: LoginRequest): JSONObject {
-        val user = userRepo.getUserByEmail(data.email)
+        val user = userRepo.getUser(data.email)
         if (user == null || !security.checkPassword(data.password, user.password)) {
             return error("Invalid user or password")
         }

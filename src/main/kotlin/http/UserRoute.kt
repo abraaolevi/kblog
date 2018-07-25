@@ -30,15 +30,16 @@ fun Route.users() {
         authenticate("jwt") {
 
             get("/") {
-                val user = call.authentication.principal<User>()
-
                 val response = userService.getAllUsers()
                 call.respond(HttpStatusCode.fromValue(response["code"] as Int), response)
             }
 
             get("/{id}") {
                 val id = call.parameters["id"]?.toInt()!!
+
+                userService.loggedUser = call.authentication.principal()
                 val response = userService.getUser(id)
+
                 call.respond(HttpStatusCode.fromValue(response["code"] as Int), response)
             }
 
